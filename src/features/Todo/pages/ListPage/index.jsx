@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TodoList from "../../components/TodoList";
+import {
+  useLocation,
+  useMatch,
+  useMatches,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import queryString from "query-string";
 
 ListPage.prototypes = {};
 
 function ListPage(props) {
   const initTodoList = [
-    //props không thay đổi được --- todoList là giá trị ban đầu
+    //props không thay đổi được --- initTodoList là giá trị ban đầu
     {
       id: 1,
       title: "Eat",
@@ -23,8 +32,19 @@ function ListPage(props) {
     },
   ];
 
+  const location = useLocation();
   const [todoList, setTodoList] = useState(() => initTodoList);
-  const [fillteredStatus, setFillteredStatus]= useState('all');
+  const [fillteredStatus, setFillteredStatus] = useState(() => {
+    const params = queryString.parse(location.search);
+    return params.status || "all";
+  });
+
+  const [search, setSearch] = useSearchParams();
+
+  useEffect(() => {
+    const params = queryString.parse(search.get("status"));
+    setFillteredStatus(params || "all");
+  }, [search]);
 
   const handleTodoClick = (todo, idx) => {
     //clone curent array to the new one
@@ -40,20 +60,24 @@ function ListPage(props) {
     //update todo list
     setTodoList(newTodoList);
   };
-
   const handleShowAllClick = () => {
-    setFillteredStatus('all');
+    setFillteredStatus("all");
+    setSearch({ status: "all" });
   };
 
   const handleShowConpletedClick = () => {
-    setFillteredStatus('completed');
+    setFillteredStatus("completed");
+    setSearch({ status: "completed" });
   };
 
   const handleShowNewClick = () => {
-    setFillteredStatus('new');
+    setFillteredStatus("new");
+    setSearch({ status: "new" });
   };
 
-  const renderedTodoList = todoList.filter(todo => fillteredStatus ==='all' || fillteredStatus === todo.status);
+  const renderedTodoList = todoList.filter(
+    (todo) => fillteredStatus === "all" || fillteredStatus === todo.status
+  );
 
   return (
     <div>
