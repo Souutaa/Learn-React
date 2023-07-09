@@ -1,9 +1,9 @@
 import React from "react";
-import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./App.css";
+import NotFound from "./components/NotFound";
 import AlbumFeatures from "./features/Album/pages";
 import TodoFeature from "./features/Todo/pages";
-import NotFound from "./components/NotFound";
 
 function App() {
   if (!TodoFeature || !AlbumFeatures) {
